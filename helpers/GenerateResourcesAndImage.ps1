@@ -3,10 +3,11 @@ $ErrorActionPreference = 'Stop'
 enum ImageType {
     Windows2019   = 1
     Windows2022   = 2
-    Ubuntu2004    = 3
-    Ubuntu2204    = 4
-    Ubuntu2404    = 5
-    UbuntuMinimal = 6
+    Windows2025   = 3
+    Ubuntu2004    = 4
+    Ubuntu2204    = 5
+    Ubuntu2404    = 6
+    UbuntuMinimal = 7
 }
 
 Function Get-PackerTemplatePath {
@@ -24,6 +25,9 @@ Function Get-PackerTemplatePath {
         }
         ([ImageType]::Windows2022) {
             $relativeTemplatePath = Join-Path (Join-Path "windows" "templates") "windows-2022.pkr.hcl"
+        }
+        ([ImageType]::Windows2025) {
+            $relativeTemplatePath = Join-Path (Join-Path "windows" "templates") "windows-2025.pkr.hcl"
         }
         ([ImageType]::Ubuntu2004) {
             $relativeTemplatePath = Join-Path (Join-Path "ubuntu" "templates") "ubuntu-20.04.pkr.hcl"
@@ -81,7 +85,7 @@ Function GenerateResourcesAndImage {
         .PARAMETER ResourceGroupName
             The name of the resource group to create the Azure resources in.
         .PARAMETER ImageType
-            The type of image to generate. Valid values are: Windows2019, Windows2022, Ubuntu2004, Ubuntu2204, UbuntuMinimal.
+            The type of image to generate. Valid values are: Windows2019, Windows2022, Windows2025, Ubuntu2004, Ubuntu2204, Ubuntu2404, UbuntuMinimal.
         .PARAMETER ManagedImageName
             The name of the managed image to create. The default is "Runner-Image-{{ImageType}}".
         .PARAMETER AzureLocation
@@ -115,6 +119,8 @@ Function GenerateResourcesAndImage {
             The default is 'ask'.
         .PARAMETER Tags
             Tags to be applied to the Azure resources created.
+        .PARAMETER PluginVersion
+            Specify the version of the packer Azure plugin to use. The default is "2.2.1".
         .EXAMPLE
             GenerateResourcesAndImage -SubscriptionId {YourSubscriptionId} -ResourceGroupName "shsamytest1" -ImageGenerationRepositoryRoot "C:\runner-images" -ImageType Ubuntu2004 -AzureLocation "East US"
     #>
@@ -139,6 +145,8 @@ Function GenerateResourcesAndImage {
         [string] $AzureClientSecret,
         [Parameter(Mandatory = $False)]
         [string] $AzureTenantId,
+        [Parameter(Mandatory = $False)]
+        [string] $PluginVersion = "2.2.1",
         [Parameter(Mandatory = $False)]
         [switch] $RestrictToAgentIpAddress,
         [Parameter(Mandatory = $False)]
@@ -214,7 +222,7 @@ Function GenerateResourcesAndImage {
     $InstallPassword = $env:UserName + [System.GUID]::NewGuid().ToString().ToUpper()
 
     Write-Host "Downloading packer plugins..."
-    & $PackerBinary init $TemplatePath
+    & $PackerBinary plugins install github.com/hashicorp/azure $PluginVersion
 
     if ($LastExitCode -ne 0) {
         throw "Packer plugins download failed."
