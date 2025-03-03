@@ -173,8 +173,4 @@ jobs:
     inputs:
       targetType: filePath
       filePath: ./images.CI/linux-and-win/cleanup.ps1
-      arguments: -TempResourceGroupName "$(TempResourceGroupName)" `
-                 -SubscriptionId $(AZURE_SUBSCRIPTION) `
-                 -ClientId $(CLIENT_ID) `
-                 -ClientSecret $(CLIENT_SECRET) `
-                 -TenantId $(AZURE_TENANT)
+      arguments: -TempResourceGroupName "$(TempResourceGroupName)"
