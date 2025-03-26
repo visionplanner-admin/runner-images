@@ -167,10 +167,11 @@ jobs:
                    -ManagedImageName "$(ManagedImageName)" `
                    -AccessToken $(RELEASE_TARGET_TOKEN)
 
-  - task: PowerShell@2
-    displayName: 'Clean up resources'
-    condition: always()
-    inputs:
-      targetType: filePath
-      filePath: ./images.CI/linux-and-win/cleanup.ps1
-      arguments: -TempResourceGroupName "$(TempResourceGroupName)"
+    - task: AzurePowerShell@5
+      displayName: 'Clean up resources'
+      condition: always()
+      inputs:
+        azureSubscription: $(AZURE_SUBSCRIPTION)
+        scriptType: filePath
+        scriptPath: ./images.CI/linux-and-win/cleanup.ps1
+        scriptArguments: -TempResourceGroupName "$(TempResourceGroupName)"
