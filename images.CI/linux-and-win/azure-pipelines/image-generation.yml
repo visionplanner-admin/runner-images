@@ -35,10 +35,6 @@ parameters:
     type: string
     default: 'self'
   
-  - name: serviceConnection
-    type: string
-    default: '$(SERVICE_CONNECTION)'
-
 jobs:
 - job: ${{ parameters.job_id }}
   displayName: Image Generation (${{ parameters.image_type }})
