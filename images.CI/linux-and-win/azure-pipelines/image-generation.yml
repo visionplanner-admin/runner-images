@@ -34,6 +34,10 @@ parameters:
   - name: repository_ref
     type: string
     default: 'self'
+  
+  - name: serviceConnection
+    type: string
+    default: '$(SERVICE_CONNECTION)'
 
 jobs:
 - job: ${{ parameters.job_id }}
@@ -171,7 +175,7 @@ jobs:
     displayName: 'Clean up resources'
     condition: always()
     inputs:
-      azureSubscription: '$(SERVICE_CONNECTION)'
+      azureSubscription: ${{ parameters.serviceConnection }}
       scriptType: filePath
       scriptPath: ./images.CI/linux-and-win/cleanup.ps1
       scriptArguments: -TempResourceGroupName "$(TempResourceGroupName)"
