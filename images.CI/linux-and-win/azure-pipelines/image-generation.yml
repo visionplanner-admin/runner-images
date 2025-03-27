@@ -171,7 +171,7 @@ jobs:
     displayName: 'Clean up resources'
     condition: always()
     inputs:
-      azureSubscription: $(SERVICE_CONNECTION)
+      azureSubscription: "$(SERVICE_CONNECTION)"
       scriptType: filePath
       scriptPath: ./images.CI/linux-and-win/cleanup.ps1
       scriptArguments: -TempResourceGroupName "$(TempResourceGroupName)"
